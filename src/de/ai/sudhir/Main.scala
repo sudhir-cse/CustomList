@@ -2,40 +2,45 @@ package de.ai.sudhir
 
 import java.util.NoSuchElementException
 
-abstract class MyList {
-  def head: Int
-  def tail: MyList
+abstract class MyList[+A] {
+  def head: A
+  def tail: MyList[A]
   def isEmpty: Boolean
-  def add(item: Int): MyList
+  def add[B >: A](item: B): MyList[B]
   def printElement: String
   override def toString: String = "[" + printElement + "]"
 }
 
-object Empty extends MyList {
-  override def head: Int = throw new NoSuchElementException
-  override def tail: MyList = throw new NoSuchElementException
+object Empty extends MyList[Nothing] {
+  override def head = throw new NoSuchElementException
+  override def tail = throw new NoSuchElementException
   override def isEmpty: Boolean = true
-  override def add(item: Int): MyList = new Cons(item, Empty)
+  override def add[B >: Nothing](item: B): MyList[B] = new Cons(item, Empty)
   override def printElement: String = " "
 }
 
-class Cons(h: Int, t: MyList) extends MyList {
-  override def head: Int = h
-  override def tail: MyList = t
+class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+  override def head: A = h
+  override def tail: MyList[A] = t
   override def isEmpty: Boolean = false
-  override def add(item: Int): MyList = new Cons(item, this)
+  override def add[B >: A](item: B): MyList[B] = new Cons(item, this)
   override def printElement: String = " " + h + tail.printElement
 }
 
 /* Tests */
 object Main extends App {
 
-  val list = new Cons(1, new Cons(2, new Cons(3, Empty)))
-  println(list.tail.head)
+  val listOfInteger: MyList[Int] =
+    new Cons[Int](1, new Cons[Int](2, new Cons[Int](3, Empty)))
+  println(listOfInteger.tail.tail.head)
+  println(listOfInteger.add(0).head)
+  println(listOfInteger.toString)
 
-  println(list.add(10).head)
-
-  //test toString method
-  println(list.toString)
+  val listOfString: MyList[String] = new Cons[String](
+    "Hello",
+    new Cons[String]("Scala", new Cons[String]("World", Empty)))
+  println(listOfString.tail.tail.head)
+  println(listOfString.add("scala-the-rock").head)
+  println(listOfString.toString)
 
 }
