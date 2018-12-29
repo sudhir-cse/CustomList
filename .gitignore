@@ -67,3 +67,6 @@ fabric.properties
 
 *.class
 *.log
+
+# This is only for testing the code while development
+src/de/ai/sudhir/examples/TestPlayGround.scala
