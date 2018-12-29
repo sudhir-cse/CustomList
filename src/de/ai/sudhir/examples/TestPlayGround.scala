@@ -2,34 +2,30 @@ package de.ai.sudhir.examples
 
 object TestPlayGround extends App {
 
-  abstract class Animal {
-    def eat
-  }
+  case class Person(name: String, age: Int)
 
-  //Abstract class
-  val dog = new Animal {
-    override def eat: Unit = println("chamchamcham...")
-  }
-  dog.eat
+  // 1. Promote class member to instance variable
+  val rakesh = new Person("Rakesh", 28)
+  rakesh.name
+  rakesh.age
 
-  // For non-abstract class
-  class Person(name: String) {
-    def getName = println(s"Hello, my name is $name, how can I help you!")
-  }
-  val rakesh = new Person("Rakesh") {
-    override def getName =
-      println(s"Hello, my name is Rakesh, how can I help you!")
-  }
+  // 2. Sensible toString
+  println(rakesh.toString)
 
-  trait Employee {
-    def getFirstName: String
-    def getLastName: String
-    def getSalary: String
-  }
+  //3. Has handy copy methods
+  val ram = rakesh.copy(name = "Ram")
+  println(ram.toString)
+  println(ram.name)
+  println(ram.age)
 
-  val accountant = new Employee {
-    override def getFirstName: String = ???
-    override def getLastName: String = ???
-    override def getSalary: String = ???
-  }
+  // 4. Companion method
+  val priyanka = Person("Priyanka", 22)
+  println(priyanka.name)
+
+  // 5. has code implemented
+
+  // 6. Case classes are serializable
+
+  // 7. Case classes have extractor patter = they can be used inside pattern matching
+
 }

@@ -24,7 +24,7 @@ abstract class MyList[+A] {
   def ++[B >: A](list: MyList[B]): MyList[B]
 }
 
-object Empty extends MyList[Nothing] {
+case object Empty extends MyList[Nothing] {
   override def head = throw new NoSuchElementException
   override def tail = throw new NoSuchElementException
   override def isEmpty: Boolean = true
@@ -39,31 +39,31 @@ object Empty extends MyList[Nothing] {
   override def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
 
-class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   override def head: A = h
   override def tail: MyList[A] = t
   override def isEmpty: Boolean = false
-  override def add[B >: A](item: B): MyList[B] = new Cons(item, this)
+  override def add[B >: A](item: B): MyList[B] = Cons(item, this)
   override def printElement: String = " " + h + tail.printElement
 
   override def filter(predicate: MyPredicate[A]): MyList[A] =
-    if (predicate.test(h)) new Cons(h, t.filter(predicate))
+    if (predicate.test(h)) Cons(h, t.filter(predicate))
     else t.filter(predicate)
 
   override def map[B](transformer: MyTransformer[A, B]): MyList[B] =
-    new Cons(transformer.transform(h), t.map(transformer))
+    Cons(transformer.transform(h), t.map(transformer))
 
   override def flatMap[B](transformer: MyTransformer[A, MyList[B]]): MyList[B] =
     transformer.transform(h) ++ t.flatMap(transformer)
 
-  override def ++[B >: A](list: MyList[B]): MyList[B] = new Cons(h, t ++ list)
+  override def ++[B >: A](list: MyList[B]): MyList[B] = Cons(h, t ++ list)
 }
 
 /* Tests */
 object Main extends App {
 
   val listOfInteger: MyList[Int] =
-    new Cons[Int](1, new Cons[Int](2, new Cons[Int](3, Empty)))
+    Cons[Int](1, new Cons[Int](2, new Cons[Int](3, Empty)))
 
   // Filter
   val filterEvenNo = listOfInteger.filter(new MyPredicate[Int] {
@@ -86,7 +86,7 @@ object Main extends App {
   // FlatMap
   val flatMap = listOfInteger.flatMap(new MyTransformer[Int, MyList[Int]] {
     override def transform(element: Int): MyList[Int] =
-      new Cons[Int](element, new Cons[Int](element * 2, Empty))
+      Cons[Int](element, new Cons[Int](element * 2, Empty))
   })
   println(flatMap.toString)
 
